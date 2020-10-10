@@ -18,15 +18,15 @@ function readLine(line) {
 			// 	"2816213588 , 239"
 			// );
 			console.log(
-				fibonacciModulo(99999999999999999, 2) === 0,
+				fibonacciModulo(99999999999999999n, 2n) === 0,
 				"99999999999999999, 2"
 			);
 
 			process.exit();
 		}
 
-		var n = parseInt(line.toString().split(" ")[0], 10);
-		var m = parseInt(line.toString().split(" ")[1], 10);
+		var n = BigInt(line.toString().split(" ")[0]);
+		var m = BigInt(line.toString().split(" ")[1]);
 		var fibonacciResult = fibonacciModulo(n, m);
 
 		// test
@@ -45,19 +45,19 @@ function fibonacciModulo(n, m) {
 	if (n <= 1) return n;
 	for (let i = 2; i <= n; i++) {
 		//console.log((list[i - 1] + list[i - 2]) % m);
-		list.push((list[i - 1] + list[i - 2]) % m);
+		list.push((list[i - 1] + list[i - 2]) % Number(m));
 		if (i > 2 && list[i - 1] === 0 && list[i] === 1) {
 			periodLength = list.length - 2;
 			break;
 		}
 	}
-	console.log(list);
+	//console.log(list);
 	if (periodLength == 0) {
 		return list[list.length - 1];
 	} else {
-		console.log(periodLength);
-		let reminder = n % periodLength;
-		console.log("reminder", reminder);
+		//console.log(periodLength);
+		let reminder = n % BigInt(periodLength);
+		//console.log("n=" + n, "reminder=" + reminder);
 		return list[reminder];
 	}
 }
