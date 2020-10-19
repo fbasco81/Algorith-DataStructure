@@ -1,5 +1,4 @@
 var readline = require("readline");
-const BigNumber = require('bignumber.js');
 
 process.stdin.setEncoding("utf8");
 var rl = readline.createInterface({
@@ -25,50 +24,39 @@ function readLine(line) {
 
 function lastDigitSumOfFibonacci(n)
 {
-	var total = new BigNumber(0);
+	var total = BigInt(0);
 	for (var i=n; i>=0; i--)
 	{
-		total.plus(fibonacci(i).decimalPlaces(0));
-		console.log('fibonacci=', fibonacci(i).decimalPlaces(0).toFixed(),'total=', total);
+		total += fibonacci(i);
+		//console.log('fibonacci=', fibonacci(i),'total=', total);
 //		console.log('----------------------------');
 		
 	}
 //	console.log(total.toString());
 	return total.toString().substr(total.toString().length-1,1);
 }
-
+var cache = {};
+   
 
 function fibonacci(n) {
-	let o = new BigNumber(1 + Math.sqrt(5)).dividedBy(2); // should be 1.618034
-	let nth = new BigNumber(n); //BigInt(n);
-
-	let numerator1 = o.exponentiatedBy(nth);
-	let numerator2 = new BigNumber((new BigNumber(1) - o)).exponentiatedBy(nth);
-	let divider = new BigNumber(Math.sqrt(5)); // * (BigInt(1) ** nth); 
+	if (cache[n])
+		return cache[n];
+	let a = BigInt(0);
+	let b = BigInt(1);
 	
-	let result = new BigNumber(numerator1 - numerator2).dividedBy(divider);
-	//console.log('num1=' + numerator1,'num2='+ numerator2);
-	//console.log('divider=' +divider);
-	//return result;
-	return result;
-}
-
-function fibonacci2(n) {
-	let scale = 10*10000000000000000000000; //Number.MAX_SAFE_INTEGER;
-	let o = BigInt(1.6180339887 * scale); // should be 1.618034
-	let nth = BigInt(n);
-
-	let numerator1 = o ** nth;
-	let numerator2 = (BigInt(1*scale) - o) ** nth;
-	let divider = BigInt(Math.sqrt(5) * scale); // * (BigInt(1) ** nth); 
-	if (n >= 2)
-	{
-		divider = divider * (BigInt(scale) ** BigInt(n-1));
+	for (var i = 31; i >= 0; i--) {
+		let d = BigInt(a * (b * BigInt(2) - a));
+		let	e = BigInt(a * a + b * b);
+		a = d;
+		b = e;
+		if (((n >> i) & 1) != 0) {
+			let c = a + b;
+			a = b;
+			b = c;
+		}
 	}
-	//* (BigInt(1000000)**BigInt(n === 0 ? 1 : n));
-	let result = (numerator1 - numerator2) / (divider);
-	//console.log('num1=' + numerator1,'num2='+ numerator2);
-	//console.log('divider=' +divider);
-	//return result;
-	return result;
+	cache[n] = a;
+		return a;
 }
+
+
