@@ -16,10 +16,11 @@ function readLine(line) {
 
 	if (line.toString().indexOf('test') >= 0){
 		// test
+		console.log(maxValue(10, [1,3,-6,-5,-8,12,0,5,7,2], [20,12,1,3,2,4,1,-40,1,2]) === 668);
+
 		console.log(maxValue(5, [1,2,3,4,5], [1,0,1,0,1]) === 12);
 		console.log(maxValue(1, [23], [39]) === 897);
 		console.log(maxValue(3, [1,3,-5], [-2,4,1]) === 23);
-		console.log(maxValue(10, [1,3,-6,-5,-8,12,0,5,7,2], [20,12,1,3,2,4,1,-40,1,2]) === 679);
 	
 
 		//console.log(maxValue());
@@ -52,43 +53,24 @@ function readLine(line) {
 
 function maxValue(adsNumber, profitPerClick, averageClicks)
 {
-	let pProducts = productsPositiveValue(adsNumber, profitPerClick, averageClicks);
-	let nProducts = productsNegativeValue(adsNumber, profitPerClick, averageClicks);
-
-	let allProducts = [...pProducts,...nProducts];
-	return allProducts.sort((x1,x2) => parseInt(x2,10) - parseInt(x1, 10))
-				.slice(allProducts.length - adsNumber, allProducts.length)
+	let pProducts = productsValue(adsNumber, profitPerClick, averageClicks);
+	
+	return pProducts.sort((x1,x2) => parseInt(x2,10) - parseInt(x1, 10))
+				.slice(pProducts.length - adsNumber, pProducts.length)
 				.reduce((prev, cur) => prev + cur);
 }
 
-function productsPositiveValue(adsNumber, profitPerClick, averageClicks)
+function productsValue(adsNumber, profitPerClick, averageClicks)
 {
-	profitPerClick = profitPerClick.filter(x => x >= 0).sort((x1,x2) => parseInt(x2,10) - parseInt(x1, 10));
-	averageClicks = averageClicks.filter(x => x >= 0).sort((x1,x2) => parseInt(x2,10) - parseInt(x1, 10));
+	profitPerClick = profitPerClick.sort((x1,x2) => parseInt(x2,10) - parseInt(x1, 10));
+	averageClicks = averageClicks.sort((x1,x2) => parseInt(x2,10) - parseInt(x1, 10));
 	
 	let products = [];
 	for (let i=0; i<adsNumber; i++)
 	{
-		if (profitPerClick[i] !== undefined && 
-			averageClicks[i] != undefined){
-			products.push(profitPerClick[i] * averageClicks[i]);
-		}
+		products.push(profitPerClick[i] * averageClicks[i]);
 	}
 	return products;
 }
 
-function productsNegativeValue(adsNumber, profitPerClick, averageClicks)
-{
-	profitPerClick = profitPerClick.filter(x => x < 0).sort((x1,x2) => parseInt(x1,10) - parseInt(x2, 10));
-	averageClicks = averageClicks.filter(x => x < 0).sort((x1,x2) => parseInt(x1,10) - parseInt(x2, 10));
-	
-	let products = [];
-	for (let i=0; i<adsNumber; i++)
-	{
-		if (profitPerClick[i] !== undefined &&
-			averageClicks[i] !== undefined){
-			products.push(profitPerClick[i] * averageClicks[i]);
-		}
-	}
-	return products;
-}
+
