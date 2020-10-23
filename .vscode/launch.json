@@ -39,7 +39,7 @@
 				"<node_internals>/**"
 			],
 			"console": "integratedTerminal",
-			"program": "${workspaceFolder}\\w3 - 04 - CollectingSignatures\\program.js"
+			"program": "${workspaceFolder}\\w3 - 05 - MaxNumPrizes\\program.js"
 		}
 	]
 }
