@@ -39,7 +39,7 @@
 				"<node_internals>/**"
 			],
 			"console": "integratedTerminal",
-			"program": "${workspaceFolder}\\w4 - 02 - MajorityElement\\program.js"
+			"program": "${workspaceFolder}\\w4 - 03 - QuickSort\\program.js"
 		}
 	]
 }
