@@ -1,4 +1,5 @@
 var readline = require("readline");
+var util = require("util");
 
 process.stdin.setEncoding("utf8");
 var rl = readline.createInterface({
@@ -8,19 +9,27 @@ var rl = readline.createInterface({
 
 rl.on("line", readLine);
 let lineNumber = 0;
-let segments = [];
+let starts = [];
+let ends = [];
 let points = [];
 let segmentNumber = 0;
-let pointNumber = 0;
 
 function readLine(line) {
   if (line.toString().indexOf("test") >= 0) {
-    let doTest = (segments, points, expected) => {
-      let actual = find(segments, points);
+    let doTest = (starts, ends, points, expected) => {
+      let actual = find(starts, ends, points);
       if (actual.join(" ") !== expected.join(" ")) {
-        console.log(
-          "Test failed: found array" + actual + " expected:" + expected
+        //console.log(
+        //"Test failed" // +
+        process.stdout.write(
+          util
+            .inspect(actual, { maxArrayLength: null })
+            .replace("[", "")
+            .replace("]", "")
+            .replace(/,/g, "")
         );
+        //  "Test failed: found array" + actual + " expected:" + expected
+        //);
         return false;
       }
 
@@ -34,57 +43,77 @@ function readLine(line) {
       return true;
     };
 
-    let segments = [
-      { a1: 0, a2: 5 },
-      { a1: 7, a2: 10 },
+    let starts = [
+      { v: 0, t: "S" },
+      { v: 7, t: "S" },
+    ];
+    let ends = [
+      { v: 5, t: "E" },
+      { v: 10, t: "E" },
     ];
     let points = [
-      { v: 1, i: 0 },
-      { v: 6, i: 1 },
-      { v: 11, i: 2 },
+      { v: 1, t: "P", i: 0 },
+      { v: 6, t: "P", i: 1 },
+      { v: 11, t: "P", i: 2 },
     ];
-    doTest(segments, points, [1, 0, 0]);
+    doTest(starts, ends, points, [1, 0, 0]);
 
-    segments = [
-      { a1: 3, a2: 2 },
-      { a1: 0, a2: 5 },
-      { a1: -3, a2: 2 },
-      { a1: 7, a2: 10 },
+    starts = [
+      { v: 3, t: "S" },
+      { v: 0, t: "S" },
+      { v: -3, t: "S" },
+      { v: 7, t: "S" },
+    ];
+    ends = [
+      { v: 2, t: "E" },
+      { v: 5, t: "E" },
+      { v: 2, t: "E" },
+      { v: 10, t: "E" },
     ];
     points = [
-      { v: 1, i: 0 },
-      { v: 6, i: 1 },
+      { v: 1, t: "P", i: 0 },
+      { v: 6, t: "P", i: 1 },
+      { v: 11, t: "P", i: 2 },
     ];
-    doTest(segments, points, [2, 0]);
 
-    segments = [
-      { a1: 3, a2: 3 },
-      { a1: 0, a2: 5 },
-      { a1: -3, a2: 2 },
-      { a1: 7, a2: 10 },
+    doTest(starts, ends, points, [2, 0, 0]);
+
+    starts = [
+      { v: 3, t: "S" },
+      { v: 0, t: "S" },
+      { v: -3, t: "S" },
+      { v: 7, t: "S" },
+    ];
+    ends = [
+      { v: 5, t: "E" },
+      { v: 5, t: "E" },
+      { v: 2, t: "E" },
+      { v: 10, t: "E" },
     ];
     points = [
-      { v: 6, i: 0 },
-      { v: 1, i: 1 },
-      { v: 3, i: 2 },
+      { v: 6, t: "P", i: 0 },
+      { v: 1, t: "P", i: 1 },
+      { v: 3, t: "P", i: 2 },
     ];
-    doTest(segments, points, [0, 2, 2]);
+    doTest(starts, ends, points, [0, 2, 2]);
 
-    for (let p = 0; p < 1000; p++) {
-      segments = [];
+    for (let p = 0; p < 1; p++) {
+      starts = [];
+      ends = [];
       points = [];
 
       for (let i = 0; i < 50000; i++) {
-        let a1 = Math.random() * 10 ** 7;
-        let a2 = Math.random() * 10 ** 7 + a1;
+        let a1 = 10 ** -8;
+        let a2 = 10 ** 8;
 
         let p = Math.random() * 10 ** 7;
 
-        segments.push({ a1: a1, a2: a2 });
-        points.push(p);
+        starts.push({ v: a1, t: "S" });
+        ends.push({ v: a2, t: "E" });
+        points.push({ v: p, t: "P", i: i });
       }
       console.log("start test");
-      doTest(segments, points, [0, 2, 2]);
+      doTest(starts, ends, points, [0, 2, 2]);
       console.log("end test");
     }
     process.exit();
@@ -97,16 +126,18 @@ function readLine(line) {
 
   if (lineNumber > 0 && lineNumber <= segmentNumber) {
     let tmpArr = line.toString().split(" ");
-    segments.push({ a1: parseInt(tmpArr[0], 10), a2: parseInt(tmpArr[1], 10) });
+    starts.push({ v: parseInt(tmpArr[0], 10), t: "S" });
+    ends.push({ v: parseInt(tmpArr[1], 10), t: "E" });
   }
 
   if (lineNumber > segmentNumber) {
     let tmpArr = line.toString().split(" ");
     for (let i = 0; i < tmpArr.length; i++) {
-      points.push({ v: parseInt(tmpArr[i], 10), i: i });
+      points.push({ v: parseInt(tmpArr[i], 10), t: "P", i: i });
     }
 
-    let result = find(segments, points);
+    let result = find(starts, ends, points);
+
     for (let i = 0; i < result.length; i++) {
       process.stdout.write(result[i].toString());
       process.stdout.write(" ");
@@ -117,90 +148,37 @@ function readLine(line) {
   lineNumber++;
 }
 
-function find(segments, points) {
-  let orderedSegments = segments.sort((a, b) => (a.a1 < b.a1 ? -1 : 1));
-  let orderedPoints = points.sort((a, b) => (a.v < b.v ? -1 : 1));
+function find(starts, ends, points) {
+  let allValues = [...starts, ...ends, ...points].sort((a, b) => {
+    if (a.v === b.v) {
+      return getSortValue(a.t) - getSortValue(b.t);
+    }
+    return a.v - b.v;
+  });
 
-  let result = [];
-  let segmentStartIndex = 0;
+  let result = new Array(points.length);
+  let openSegments = 0;
+  for (let i = 0; i < allValues.length; i++) {
+    let thisValue = allValues[i];
 
-  while (orderedPoints.length > 0) {
-    let thisPoint = orderedPoints.shift();
-    result[thisPoint.i] = 0;
-    // fast forward segment
-    if (segmentStartIndex < orderedSegments.length) {
-      while (
-        segmentStartIndex < orderedSegments.length &&
-        thisPoint.v > orderedSegments[segmentStartIndex].a2
-      ) {
-        segmentStartIndex++;
-      }
-
-      let segmentTemporaryIndex = segmentStartIndex;
-      while (
-        segmentTemporaryIndex < orderedSegments.length &&
-        thisPoint.v >= orderedSegments[segmentTemporaryIndex].a1 &&
-        thisPoint.v <= orderedSegments[segmentTemporaryIndex].a2
-      ) {
-        result[thisPoint.i]++;
-        segmentTemporaryIndex++;
-      }
+    if (thisValue.t === "S") {
+      openSegments++;
+    } else if (thisValue.t === "E") {
+      openSegments--;
+    } else {
+      result[thisValue.i] = openSegments;
     }
   }
   return result;
 }
 
-function find2(segments, points) {
-  let orderedSegments = segments.sort((a, b) => (a.a1 < b.a1 ? -1 : 1));
-  let result = [];
-  for (var i = 0; i < points.length; i++) {
-    let filteredSegments = orderedSegments.filter(
-      (item) => item.a1 <= points[i] && item.a2 >= points[i]
-    );
-    result[i] = filteredSegments.length;
-    // let indexLeft = findIndexSegmentsLeft(orderedSegments, points[i], 0, orderedSegments.length-1);
-    // result[i] = 0;
-    // for (let j=indexLeft;  j<orderedSegments.length;j++){
-    // 	if (orderedSegments[j].a2 >= points[i]){
-    // 		result[i]++;
-    // 	}
-    // }
+function getSortValue(pointType) {
+  switch (pointType) {
+    case "S":
+      return 0;
+    case "P":
+      return 1;
+    case "E":
+      return 2;
   }
-  return result;
-}
-
-function findIndexSegmentsLeft(segments, point, start, end) {
-  let startIndex = -1;
-  let left = start;
-  let right = end;
-
-  while (right > left) {
-    if (point >= segments[right].a1 && point <= segments[right].a2) {
-      startIndex = right;
-    } else {
-      right--;
-    }
-
-    if (
-      startIndex === -1 &&
-      point >= segments[left].a1 &&
-      point <= segments[left].a2
-    ) {
-      startIndex = left;
-    } else {
-      return startIndex;
-    }
-
-    if (right - left > 1) {
-      let mid = Math.floor((right - left) / 2) + left;
-      a1 = parseInt(segments[mid].a1);
-
-      if (point >= segments[mid].a1 && point <= segments[mid].a2) {
-        left = mid;
-      } else {
-        right = mid;
-      }
-    }
-  }
-  return startIndex;
 }
