@@ -4,6 +4,7 @@
 	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
+		
 		{
 			"name": "Attach",
 			"port": 9229,
@@ -40,6 +41,24 @@
 			],
 			"console": "integratedTerminal",
 			"program": "${workspaceFolder}\\w5 - 01 - MoneyChangeAgain\\program.js"
+		}
+		  {
+			"type": "node",
+			"request": "launch",
+			"name": "Mocha Current File",
+			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+			"args": [
+				"--timeout",
+				"999999",
+				"--colors",
+				"${file}",
+				"--exit"
+			],
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"skipFiles": [
+				"<node_internals>/**/*.js"
+			]
 		}
 	]
 }

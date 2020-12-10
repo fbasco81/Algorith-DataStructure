@@ -9,26 +9,6 @@ var rl = readline.createInterface({
 rl.on("line", readLine);
 
 function readLine(line) {
-	if (line.toString().indexOf("test") >= 0) {
-		let doTest = (input, expected) => {
-		  let actual = changeCoins(input);
-		  if (actual !== expected) {
-			console.log(
-			  "Test failed: found " + actual + " expected:" + expected
-			);
-			return false;
-		  }
-	
-		  console.log("Test OK");
-		  return true;
-		};
-	
-		doTest(2, 2);
-		doTest(34, 9);
-	
-		process.exit();
-	  }
-
 	if (line !== "\n") {
 		var num = parseInt(line.toString(), 10);
 		var numberOfCoins = changeCoins(num);
@@ -40,7 +20,7 @@ function readLine(line) {
 
 function changeCoins(amount) {
 	let coins = [1,3,4];
-	let minNumCoins = new Array(amount);
+	let minNumCoins = [];
 	minNumCoins[0] = 0;
 	for (currentValue=1; currentValue<=amount;currentValue++){
 		minNumCoins[currentValue] = Number.MAX_SAFE_INTEGER;
@@ -57,3 +37,5 @@ function changeCoins(amount) {
 	
 	return minNumCoins[amount];
 }
+
+module.exports = { changeCoins };
