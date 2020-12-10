@@ -1,13 +1,19 @@
-var assert = require('assert');
-var program = require('./program');
-describe('Money change', function() {
-  describe('success case', function() {
-    it('should return 2 when the amount is 2', function() {
-      assert.strictEqual(program.changeCoins(2), 2);
-    })
+var assert = require("assert");
+var program = require("./program");
+describe("Primitive calculator", function () {
+  describe("basic case (1)", function () {
+    it("should return 0 when the input is 1", function () {
+      assert.strictEqual(program.calculate(1), {
+        operations: 0,
+        sequence: [1],
+      });
+    });
 
-    it('should return 9 when the amount is 34', function() {
-        assert.strictEqual(program.changeCoins(34), 9);
-      })
+    it("should return 3 when the input is 5", function () {
+      assert.strictEqual(program.calculate(5), {
+        operations: 3,
+        sequence: [1, 2, 4, 5],
+      });
+    });
   });
 });

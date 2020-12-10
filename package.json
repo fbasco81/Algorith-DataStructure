@@ -1,5 +1,8 @@
 {
     "scripts": {
-    "test": "mocha --recursive --exit"
-  }
+        "test": "mocha --recursive --exit"
+    },
+    "devDependencies": {
+        "mocha": "^8.2.1"
+    }
 }
