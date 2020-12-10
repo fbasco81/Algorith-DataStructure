@@ -39,7 +39,7 @@
 				"<node_internals>/**"
 			],
 			"console": "integratedTerminal",
-			"program": "${workspaceFolder}\\w4 - 05 - OrganizeLottery\\program.js"
+			"program": "${workspaceFolder}\\w5 - 01 - MoneyChangeAgain\\program.js"
 		}
 	]
 }
