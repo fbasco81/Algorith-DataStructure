@@ -20,24 +20,56 @@ function readLine(line) {
   }
 }
 
-function calculate(amount) {
-  let coins = [1, 3, 4];
-  let minNumCoins = [];
-  minNumCoins[0] = 0;
-  for (currentValue = 1; currentValue <= amount; currentValue++) {
-    minNumCoins[currentValue] = Number.MAX_SAFE_INTEGER;
-    for (let j = 0; j < coins.length; j++) {
-      let coin = coins[j];
-      if (currentValue >= coin) {
-        let numCoins = minNumCoins[currentValue - coin] + 1;
-        if (numCoins < minNumCoins[currentValue]) {
-          minNumCoins[currentValue] = numCoins;
-        }
+function generateSequence(value){
+  let sequences = [
+    {steps:0, valueBefore: 0, operation: ""},
+    {steps:0, valueBefore: 0, operation:"+1"}
+  ];
+  
+  for (let i=2; i<=value;i++)
+  {
+    let lastSequence = sequences[i-1];
+    let valueBefore = i-1;
+    let operation = "+1"
+    
+    if (i % 3 === 0){
+      let index = Math.round(i/3);
+      valueBefore = index;
+      lastSequence = sequences[index];
+      operation = "*3"
+    }
+    if (i % 2 === 0){
+      let index = Math.round(i/2);
+      if (sequences[index].steps < lastSequence.steps){
+        valueBefore = index;
+        lastSequence = sequences[index];
+        operation = "*2"
       }
     }
+    
+    sequences[i] = {
+      steps:lastSequence.steps+1, 
+      valueBefore: valueBefore, 
+      operation: operation
+    };
+  }
+  return sequences;
+}
+
+function calculate(amount) {
+  
+  let allSequences = generateSequence(amount);
+  let result = { 
+    operations: allSequences[amount].steps, 
+    sequence: []
+  };
+
+  while (amount > 0){
+    result.sequence.unshift(amount);
+    amount = allSequences[amount].valueBefore;
   }
 
-  return minNumCoins[amount];
+  return result;
 }
 
 module.exports = { calculate };
