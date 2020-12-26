@@ -40,7 +40,7 @@
 				"<node_internals>/**"
 			],
 			"console": "integratedTerminal",
-			"program": "${workspaceFolder}\\w5 - 01 - MoneyChangeAgain\\program.js"
+			"program": "${workspaceFolder}\\w6 - 01 - MaxAmountOfGold\\program.js"
 		}
 		  {
 			"type": "node",

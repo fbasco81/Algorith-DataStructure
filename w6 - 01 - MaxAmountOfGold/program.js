@@ -19,7 +19,10 @@ function readLine(line) {
     numberOfBars = parseInt(line.toString().split(" ")[1], 10);
   }
   if (lineNumber === 1) {
-    barWeights = line.toString().split(" ");
+    barWeights = line
+      .toString()
+      .split(" ")
+      .map((a) => parseInt(a));
 
     let result = gold(capacity, barWeights);
     console.log(result);
@@ -29,39 +32,29 @@ function readLine(line) {
 }
 
 function gold(capacity, barWeights) {
-  let weights = [capacity + 1];
-  weights[0] = 0;
-  for (var w = 1; w <= capacity; w++) {
-    weights[i] = weights[i - 1];
-    for (var i = 0; i < barWeights; i++) {
-      if (weights[w] + barWeights[i] <= capacity) {
-        let val = Math.max(weights[w] + barWeights[i], weights[w]);
-      }
-    }
-  }
+  let matrix = new Array(barWeights.length + 1);
 
-  let matrix = new Array(array1.length + 1);
-
-  for (i = 0; i <= array1.length; i++) {
-    matrix[i] = new Array(array2.length + 1);
+  for (let i = 0; i <= barWeights.length; i++) {
+    matrix[i] = new Array(capacity + 1);
     matrix[i][0] = 0;
   }
 
-  for (j = 0; j <= array2.length; j++) {
-    matrix[0][j] = 0;
+  for (let w = 0; w <= capacity; w++) {
+    matrix[0][w] = 0;
   }
 
-  for (i = 1; i <= array1.length; i++) {
-    for (j = 1; j <= array2.length; j++) {
-      if (array1[i - 1] === array2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-      } else {
-        matrix[i][j] = Math.max(matrix[i][j - 1], matrix[i - 1][j]);
+  for (let i = 1; i <= barWeights.length; i++) {
+    for (let w = 1; w <= capacity; w++) {
+      matrix[i][w] = matrix[i - 1][w];
+      if (barWeights[i - 1] <= w) {
+        let val = matrix[i - 1][w - barWeights[i - 1]] + barWeights[i - 1];
+        if (matrix[i][w] < val) {
+          matrix[i][w] = val;
+        }
       }
     }
   }
-
-  return matrix[array1.length][array2.length];
+  return matrix[barWeights.length][capacity];
 }
 
 module.exports = { gold };
